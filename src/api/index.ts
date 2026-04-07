@@ -3,34 +3,32 @@ import { Article, IFeedParams } from '../model'
 import en from 'javascript-time-ago/locale/en'
 TimeAgo.addLocale(en)
 
-const API_URL = 'https://content.guardianapis.com/search?'
-const API_KEY = '02cb42ef-2535-4b12-b672-2f2a9ed635f8'
+const API_URL = '/api/fetcher.php';
 
 const handleFetch = async (query: string): Promise<Article[]> => {
-    const url = API_URL + query + '&api-key=' + API_KEY
+    const url = API_URL + query; 
 
-    const isValid = (a: Article) => a.type === 'article' && !!a.fields.thumbnail
+    const isValid = (a: Article) => a.type === 'article' && !!a.fields.thumbnail;
     const handleArticle = (a: Article) => {
-        a.timeAgo = new TimeAgo('en-US').format(new Date(a.webPublicationDate))
-        a.fields.trailText = a.fields.trailText.replace(/<\/?[^>]+(>|$)/g, '')
-        return a
-    }
+        a.timeAgo = new TimeAgo('en-US').format(new Date(a.webPublicationDate));
+        a.fields.trailText = a.fields.trailText.replace(/<\/?[^>]+(>|$)/g, '');
+        return a;
+    };
 
     return fetch(url)
         .then(async (response) => {
             if (response.ok) {
-                const json = await response.json()
-
+                const json = await response.json();
                 return (json?.response?.results || [])
                     .filter(isValid)
-                    .map(handleArticle)
+                    .map(handleArticle);
             }
-            throw new Error(response?.statusText)
+            throw new Error(response?.statusText);
         })
         .catch(() => {
-            return []
-        })
-}
+            return [];
+        });
+};
 
 export const fetchArticle = (id: string): Promise<Article> => {
     const query = `&show-fields=thumbnail,trailText,headline,byline,body&ids=${id}`
