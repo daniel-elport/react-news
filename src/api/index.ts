@@ -31,7 +31,7 @@ const handleFetch = async (query: string): Promise<Article[]> => {
 };
 
 export const fetchArticle = (id: string): Promise<Article> => {
-    const query = `&show-fields=thumbnail,trailText,headline,byline,body&ids=${id}`
+    const query = `?show-fields=thumbnail,trailText,headline,byline,body&ids=${id}`
     return handleFetch(query).then((r) => r[0])
 }
 
@@ -40,7 +40,7 @@ export const fetchArticleFeed = (
     index: number = 1
 ): Promise<Article[]> => {
     const { section, searchTerm } = params
-    let query = `&show-fields=thumbnail,trailText,headline&page-size=20&page=${index}`
+    let query = `?show-fields=thumbnail,trailText,headline&page-size=20&page=${index}`
 
     if (section && section !== 'latest') {
         query += '&section=' + section
